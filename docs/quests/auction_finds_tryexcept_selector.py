@@ -11,14 +11,11 @@ from selenium.webdriver.common.by import By
 product_info_selector = "div.info"
 product_elements = browser.find_elements(by=By.CSS_SELECTOR, value=product_info_selector)
 
-
-
 for product_element in product_elements: 
     title_selector = "em"
     title_element = product_element.find_element(by=By.CSS_SELECTOR, value=title_selector)
     product_title = title_element.text
 
-   
     try:
         old_price_selector = "span.cost"
         old_price_element = product_element.find_element(by=By.CSS_SELECTOR, value=old_price_selector)
@@ -26,7 +23,6 @@ for product_element in product_elements:
     except:
         original_price = ""
 
-   
     try:
         new_price_selector = "span.sale"
         new_price_element = product_element.find_element(by=By.CSS_SELECTOR, value=new_price_selector)
@@ -34,7 +30,6 @@ for product_element in product_elements:
     except:
         discounted_price = ""
 
-    
     try:
         delivery_method_selector = "div.item_icons"
         delivery_method_element = product_element.find_element(by=By.CSS_SELECTOR, value=delivery_method_selector)
