@@ -43,6 +43,11 @@ for product_element in product_elements:
     except:
         delivery_method = ""
 
-    print("title : {}, old price : {}, new price : {}, delivery : {}".format(product_title, original_price, discounted_price, delivery_method)) 
+    print("""
+title : {}
+old price : {}
+new price : {}
+delivery : {}
+""".format(product_title, original_price, discounted_price, delivery_method)) 
 
 browser.quit()

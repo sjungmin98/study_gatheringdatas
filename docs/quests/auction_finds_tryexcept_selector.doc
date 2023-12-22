@@ -1,0 +1,14 @@
+전체 : div.info
+#itembest_T > ul.uxb-img.first > li.first > div > div.info
+
+상품 제목 : em > a
+#itembest_T > ul.uxb-img.first > li.first > div > div.info > em > a
+
+정가 : li.c_price > span > strike > span
+#itembest_T > ul.uxb-img.first > li.first > div > div.info > ul > li.c_price > span > strike > span
+
+할인가 : li.d_price > span.sale > span
+#itembest_T > ul.uxb-img.first > li.first > div > div.info > ul > li.d_price > span.sale > span
+
+배송방법 : div.icon > div
+#itembest_T > ul.uxb-img.first > li:nth-child(3) > div > div.info > div.icon > div
