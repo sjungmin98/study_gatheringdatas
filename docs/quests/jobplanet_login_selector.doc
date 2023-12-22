@@ -1,0 +1,8 @@
+아이디 : #user_email
+#signInSignInCon > div.signInsignIn_wrap > div > section.section_email.er_r > fieldset > label.email.is_error > #user_email
+
+패스워드 : #user_password
+#signInSignInCon > div.signInsignIn_wrap > div > section.section_email.er_r > fieldset > label.password > #user_password
+
+로그인 버튼 : 
+#signInSignInCon > div.signInsignIn_wrap > div > section.section_email.er_r > fieldset > button
