@@ -13,8 +13,8 @@ browser.get("https://www.w3schools.com/")
 pass
 # - html 파일 받음(and 확인)
 html = browser.page_source
-print(html)
 # - 정보 획득
+# from selenium
 pass
 browser.save.screenshot("./format.png")
 # 브라우저 종료
