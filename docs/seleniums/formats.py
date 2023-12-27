@@ -14,7 +14,8 @@ pass
 # - html 파일 받음(and 확인)
 html = browser.page_source
 # - 정보 획득
-# from selenium
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 pass
 browser.save.screenshot("./format.png")
 # 브라우저 종료

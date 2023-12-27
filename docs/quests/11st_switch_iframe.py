@@ -38,6 +38,7 @@ scroll_to_end(browser)
 
 # 댓글 수집 및 저장
 def collect_and_save_comments(browser, collection):
+    browser.switch_to.frame("ifrmReview")
     comments = browser.find_elements(by=By.CSS_SELECTOR, value=".c_product_review_list > ul > li")[:10]
     for comment in comments:
         author = comment.find_element(by=By.CSS_SELECTOR, value="dl > dt.name").text
