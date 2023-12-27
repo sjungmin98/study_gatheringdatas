@@ -39,7 +39,7 @@ scroll_to_end(browser)
 # 댓글 수집 및 저장
 def collect_and_save_comments(browser, collection):
     comments = browser.find_elements(by=By.CSS_SELECTOR, value=".c_product_review_list > ul > li")[:10]
-    for comment in comments:  # 여기에서 index를 제거했습니다
+    for comment in comments:
         author = comment.find_element(by=By.CSS_SELECTOR, value="dl > dt.name").text
         rating = comment.find_element(by=By.CSS_SELECTOR, value="div > p.grade").text
         content = comment.find_element(by=By.CSS_SELECTOR, value="div.cont_text_wrap").text
