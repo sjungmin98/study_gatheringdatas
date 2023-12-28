@@ -24,8 +24,12 @@ time.sleep(3)  # 페이지가 완전히 로드될 때까지 기다리기
 col_11st_items = dbconnect("11st_item")
 
 def collect_and_save_items(browser, collection):
-    title = browser.find_element(by=By.CSS_SELECTOR, value="div.c_product_info_title.c_product_info_title_coupon > h1").text
-    old_price = browser.find_element(by=By.CSS_SELECTOR, value="dd > del").text
+    title = browser.find_element(by=By.CSS_SELECTOR, value="div > h1.title").text
+    old_price = None
+    try:
+        old_price = browser.find_element(by=By.CSS_SELECTOR, value="dd > del").text
+    except:
+         pass
     new_price = browser.find_element(by=By.CSS_SELECTOR, value="dd.price > strong > span.value").text
     img = browser.find_element(by=By.CSS_SELECTOR, value="div.img_full > img").get_attribute('src')
     details = browser.find_element(by=By.CSS_SELECTOR, value="#tabpanelDetail1 > table").text
@@ -46,9 +50,9 @@ def collect_and_save_comments(browser, collection):
 
 col_11st_items_comments = dbconnect("11st_item_comments")
 
-try:
+# try:
     # 각 상품의 타이틀을 클릭하고, 데이터를 수집하는 과정을 반복
-    for i in range(4):
+for i in range(4):
         # 상품 페이지로 이동
         element = browser.find_elements(by=By.CSS_SELECTOR, value="div > a > div.pname > p")[i]
         element.click()
@@ -63,9 +67,9 @@ try:
         # 이전 페이지 (상품 목록 페이지)로 돌아감
         browser.back()
         time.sleep(3)  # 페이지 로딩 대기
-except:
-    pass 
-finally:
+# except:
+#     pass 
+# finally:
     # 브라우저 종료
-    browser.quit()
+browser.quit()
 
