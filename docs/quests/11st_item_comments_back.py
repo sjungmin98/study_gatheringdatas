@@ -20,20 +20,21 @@ browser = webdriver.Chrome(service=ChromeService(webdriver_manager_directory))
 # 11번가 상품 페이지로 이동
 browser.get("https://www.11st.co.kr/browsing/BestSeller.tmall?method=getBestSellerMain&xfrom=main^gnb#pageNum%%13")
 
-time.sleep(1)  # 페이지가 완전히 로드될 때까지 기다리기
-col_11st_items = dbconnect("11st_items")
+time.sleep(3)  # 페이지가 완전히 로드될 때까지 기다리기
+col_11st_items = dbconnect("11st_item")
 
 def collect_and_save_items(browser, collection):
-    title = browser.find_element(by=By.CSS_SELECTOR, value="h1.title")
-    old_price = browser.find_element(by=By.CSS_SELECTOR, value="dd > del")
-    new_price = browser.find_element(by=By.CSS_SELECTOR, value="dd.price > strong > span.value")
-    img = 
-    details = 
-collect_and_save_items(browser, col_11st_items)
+    title = browser.find_element(by=By.CSS_SELECTOR, value="div.c_product_info_title.c_product_info_title_coupon > h1").text
+    old_price = browser.find_element(by=By.CSS_SELECTOR, value="dd > del").text
+    new_price = browser.find_element(by=By.CSS_SELECTOR, value="dd.price > strong > span.value").text
+    img = browser.find_element(by=By.CSS_SELECTOR, value="div.img_full > img").get_attribute('src')
+    details = browser.find_element(by=By.CSS_SELECTOR, value="#tabpanelDetail1 > table").text
+    
+    # MongoDB에 아이템 저장
+    collection.insert_one({"title": title, "old_price": old_price, "new_price": new_price, "img": img, "details": details})  
 
-def collect_and_save_comments(browser, collection) :
+def collect_and_save_comments(browser, collection):
     browser.switch_to.frame("ifrmReview")
-    col_11st_items_comments=dbconnect("11st_items_comments")
     comments = browser.find_elements(by=By.CSS_SELECTOR, value=".c_product_review_list > ul > li")
     for comment in comments:
         author = comment.find_element(by=By.CSS_SELECTOR, value="dl > dt.name").text
@@ -43,20 +44,28 @@ def collect_and_save_comments(browser, collection) :
         # MongoDB에 댓글 저장
         collection.insert_one({"author": author, "content": content, "rating": rating})
 
-col_11st_items_comments = dbconnect("11st_items_comments")
-collect_and_save_comments(browser, col_11st_items_comments)
+col_11st_items_comments = dbconnect("11st_item_comments")
 
-# 각 상품의 타이틀을 클릭하고, 뒤로 가는 과정을 반복
-for i in range(4):
-    try:
+try:
+    # 각 상품의 타이틀을 클릭하고, 데이터를 수집하는 과정을 반복
+    for i in range(4):
+        # 상품 페이지로 이동
         element = browser.find_elements(by=By.CSS_SELECTOR, value="div > a > div.pname > p")[i]
-        element.click()  # 상품 페이지로 이동
-        time.sleep(1)  # 페이지 로딩 대기
-        collect_and_save_comments(browser, collection)
-        browser.back()  # 이전 페이지 (상품 목록 페이지)로 돌아감
-        time.sleep(1)  # 페이지 로딩 대기
-    except:
-        continue
+        element.click()
+        time.sleep(3)  # 페이지 로딩 대기
 
-# 브라우저 종료
-browser.quit()
+        # 아이템 정보 수집 및 저장
+        collect_and_save_items(browser, col_11st_items)
+
+        # 댓글 정보 수집 및 저장
+        collect_and_save_comments(browser, col_11st_items_comments)
+
+        # 이전 페이지 (상품 목록 페이지)로 돌아감
+        browser.back()
+        time.sleep(3)  # 페이지 로딩 대기
+except:
+    pass 
+finally:
+    # 브라우저 종료
+    browser.quit()
+
