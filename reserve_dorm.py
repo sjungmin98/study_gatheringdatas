@@ -2,47 +2,38 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from pymongo import MongoClient
 import time
+from pymongo import MongoClient
 
-# MongoDB 클라이언트 설정
+# MongoDB 연결 설정
 mongoClient = MongoClient("mongodb://192.168.10.240:27017/")
-# database 연결
 database = mongoClient["AI_LKJ"]
-# collection 작업
-collection = database['reserve_dorm']
-collection.delete_many({})
+collection = database['reserve_transfer_dorm']
 
-# 웹드라이버 세팅
+# WebDriver 설정
 driver_manager_directory = ChromeDriverManager().install()
 browser = webdriver.Chrome(service=ChromeService(driver_manager_directory))
-url = "https://www.agoda.com/ko-kr/search?guid=903f75e4-12e7-486b-a8a8-4eafa96d42b9&asq=h83K5OpxMgwyDRBM%2B68DD5ufa9Vwpz6XltTHq4n%2B9gMIhr%2FHdI3Zp6E1hg81WRuFJtXlxDYuVQBv7pSWXIJjpqjBuHI3PJN3QnlJvOTuCIv9KtNCnQMUNDlNUEPib3uQr6QDs48C6hOjLzuYUvlEgOm%2B3QacrQMDUE7JkJAfzu2gtrYMgXaJ%2F3RhDDtVGUZGXrPk1JS%2BVyCMDKsWGu5iag%3D%3D&city=17172&tick=638409987630&locale=ko-kr&ckuid=918d2837-99d3-4469-94f9-b7089ef00e1d&prid=0&currency=KRW&correlationId=bf32119c-6047-4b1f-bf5d-7cc840c6f227&analyticsSessionId=7405222636290426852&pageTypeId=1&realLanguageId=9&languageId=9&origin=KR&cid=1908612&userId=918d2837-99d3-4469-94f9-b7089ef00e1d&whitelabelid=1&loginLvl=0&storefrontId=3&currencyId=26&currencyCode=KRW&htmlLanguage=ko-kr&cultureInfoName=ko-kr&machineName=hk-pc-2f-acm-web-user-b6b5986bf-wbs6s&trafficGroupId=4&sessionId=mktgv1kzvzcw1fclmcsrmvhx&trafficSubGroupId=849&aid=296180&useFullPageLogin=true&cttp=4&isRealUser=true&mode=production&browserFamily=Chrome&cdnDomain=agoda.net&checkIn=2024-01-20&checkOut=2024-01-25&rooms=1&adults=4&children=0&priceCur=KRW&los=5&textToSearch=%EB%B6%80%EC%82%B0&travellerType=3&familyMode=off&ds=PcYZuuOnxggxbWZI&productType=-1"
+url = "https://www.booking.com/searchresults.ko.html?ss=%EB%B6%80%EC%82%B0&ssne=%EB%B6%80%EC%82%B0&ssne_untouched=%EB%B6%80%EC%82%B0&label=Vit8GNqq0h_49era%7E9RmyvlJBF_JpBNa-QANkJ0NfLVqTd4IsK4wErA%3D%3D&aid=2210273&lang=ko&sb=1&src_elem=sb&src=searchresults&dest_id=-713900&dest_type=city&checkin=2024-01-20&checkout=2024-01-25&group_adults=4&no_rooms=1&group_children=0"
 browser.get(url)
+time.sleep(10)
 
-# 특정 요소가 로드될 때까지 대기
-WebDriverWait(browser, 20).until(
-    EC.presence_of_element_located((By.CSS_SELECTOR, "#searchPageReactRoot"))
-)
-
-# 호텔 체크박스 클릭
+# 팝업 닫기
 try:
-    # 첫 번째 선택자로 체크박스 클릭 시도
-    checkbox = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#SideBarLocationFilters > div:nth-child(3) > div.filter-items > ul > li:nth-child(3) > span > span:nth-child(1) > span")))
-    checkbox.click()
-except NoSuchElementException:
-    # 첫 번째 선택자로 체크박스를 찾지 못할 경우, 두 번째 선택자로 체크박스 클릭 시도
-    try:
-        checkbox = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#SideBarLocationFilters > div:nth-child(2) > div.filter-items > ul > li:nth-child(3) > span > span:nth-child(1) > span")))
-        checkbox.click()
-    except NoSuchElementException:
-        # 두 번째 선택자로도 체크박스를 찾지 못할 경우, 세 번째 선택자로 체크박스 클릭 시도
-        try:
-            checkbox = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#SideBarLocationFilters > div:nth-child(1) > div.filter-items > ul > li:nth-child(1) > span > span:nth-child(1) > span")))
-            checkbox.click()
-        except NoSuchElementException:
-            print("체크박스를 찾을 수 없습니다.")
+    popup_cancel = browser.find_element(By.CSS_SELECTOR, "#b2searchresultsPage > div.b9720ed41e.cdf0a9297c > div > div > div > div.dd5dccd82f > div.ffd93a9ecb.dc19f70f85.eb67815534 > div > button > span > span > svg > path")
+    popup_cancel.click()
+except Exception as e:
+    print("팝업 닫기 오류:", e)
 
-browser.quit()
+# 호텔 체크박스 선택
+hotel_checkbox = browser.find_element(By.CSS_SELECTOR, "#filter_group_ht_id_\:rs\: > div:nth-child(4) > label > span.ef785aa7f4 > span > svg")
+hotel_checkbox.click()
+time.sleep(5)
+
+# 페이지 순회 및 데이터 수집
+while True:
+    elements = browser.find_elements(By.CSS_SELECTOR, 'div.c82435a4b8.a178069f51.a6ae3c2b40.a18aeea94d.d794b7a0f7.f53e278e95.c6710787a4')
+    for element in elements:
+        print(element.text)
+        next_button = browser.find_element(By.CSS_SELECTOR, '#bodyconstraint-inner > div:nth-child(8) > div > div.af5895d4b2 > div.df7e6ba27d > div.bcbf33c5c3 > div.dcf496a7b9.bb2746aad9 > div.d7a0553560 > div.c82435a4b8.a178069f51.a6ae3c2b40.a18aeea94d.d794b7a0f7.f53e278e95.e49b423746 > nav > nav > div > div.b16a89683f.cab1524053 > button')
+        next_button.click()
+        time.sleep(3)

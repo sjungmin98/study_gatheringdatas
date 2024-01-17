@@ -8,8 +8,8 @@ mongoClient = MongoClient("mongodb://192.168.10.240:27017/")
 # database 연결
 database = mongoClient["AI_LKJ"]
 # collection 작업
-collection = database['reserve_transfer_train']
-collection.delete_many({})
+collection = database['reserve_transfer_total']
+# collection.delete_many({})
 # 웹드라이버 세팅
 driver_manager_directory = ChromeDriverManager().install()
 browser = webdriver.Chrome(service=ChromeService(driver_manager_directory))
@@ -57,7 +57,7 @@ check.click()
 
 # 프레임 전환 (만약 결과가 iframe 내부에 있는 경우)
 browser.switch_to.frame("go_list")
-
+pass
 # 테이블 데이터 추출
 for row_num in range(1, 21):
     # CSS 선택자를 사용해 특정 셀 추출
@@ -107,7 +107,8 @@ for row_num in range(1, 21):
         "train_departure": departure_location,
         "train_departure_time": departure_time,
         "train_arrival": arrival_location,
-        "train_arrival_time": arrival_time
+        "train_arrival_time": arrival_time,
+        "transfer_cate": "train"
     }
     collection.insert_one(train_info)
 
@@ -161,7 +162,8 @@ while True:
             "train_departure": departure_location,
             "train_departure_time": departure_time,
             "train_arrival": arrival_location,
-            "train_arrival_time": arrival_time
+            "train_arrival_time": arrival_time,
+            "transfer_cate": "train"
         }
         collection.insert_one(train_info)
     try:    
@@ -221,7 +223,8 @@ for row_num in range(1, 21):
             "train_departure": departure_location,
             "train_departure_time": departure_time,
             "train_arrival": arrival_location,
-            "train_arrival_time": arrival_time
+            "train_arrival_time": arrival_time, 
+            "transfer_cate": "train"
     }
     collection.insert_one(train_info)
 
@@ -275,7 +278,8 @@ while True:
             "train_departure": departure_location,
             "train_departure_time": departure_time,
             "train_arrival": arrival_location,
-            "train_arrival_time": arrival_time
+            "train_arrival_time": arrival_time,
+            "transfer_cate": "train"
         }
         collection.insert_one(train_info)
     try:    
