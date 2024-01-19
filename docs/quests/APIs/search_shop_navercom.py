@@ -35,6 +35,8 @@ result_info = collection1.insert_one(info)
 
 # 'search_shop_info'에서 생성된 _id 가져오기
 inserted_info_id = result_info.inserted_id
+# result_info.inserted_id
+# ObjectId('65aa28ad9c71b50a63a3171e')
 
 # 'search_shop_list' collection에 데이터 삽입
 for item in contents['items']:
