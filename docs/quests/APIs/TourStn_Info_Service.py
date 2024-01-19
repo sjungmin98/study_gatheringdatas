@@ -40,5 +40,6 @@ try:
     items = contents['response']['body']['items']['item']
     result = collection.insert_many(items)
 except KeyError as e:
+    print("{}".format(e))
     print(contents)
 pass
