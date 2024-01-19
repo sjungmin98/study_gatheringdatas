@@ -1,0 +1,22 @@
+import requests
+
+# url = 'http://apis.data.go.kr/B551408/rent-loan-rate-info/rate-list?serviceKey=oF8cvDrrW27C3TgVpKW9ax9JcOFDDBL%2BwlraX%2BGs9W5qYdA5jb0UnPfKCqV7BtR%2F1lHnKsfXRYlB7JZLJumIeA%3D%3D&pageNo=1&numOfRows=10&dataType=JSON'
+url = 'http://apis.data.go.kr/B551408/rent-loan-rate-info/rate-list'
+
+# https://apis.data.go.kr/B551408/rent-loan-rate-info/rate-list?
+# serviceKey=oF8cvDrrW27C3TgVpKW9ax9JcOFDDBL%2BwlraX%2BGs9W5qYdA5jb0UnPfKCqV7BtR%2F1lHnKsfXRYlB7JZLJumIeA%3D%3D
+# &pageNo=1
+# &numOfRows=10
+# &dataType=JSON
+
+params = {'serviceKey' : 'oF8cvDrrW27C3TgVpKW9ax9JcOFDDBL%2BwlraX%2BGs9W5qYdA5jb0UnPfKCqV7BtR%2F1lHnKsfXRYlB7JZLJumIeA%3D%3D'
+          ,'pageNo' : 1
+          ,'numOfRows' : 10
+          ,'dataType' : 'json'}
+
+# response = requests.get(url)
+response = requests.get(url, params=params)
+
+print(response.content)
+
+pass
